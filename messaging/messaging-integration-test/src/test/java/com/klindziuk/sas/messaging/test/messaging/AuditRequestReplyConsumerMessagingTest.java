@@ -1,7 +1,6 @@
 package com.klindziuk.sas.messaging.test.messaging;
 
 import com.klindziuk.sas.messaging.test.BaseMessagingTest;
-import com.klindziuk.sas.messaging.test.BaseTest;
 import com.klindziuk.sas.messaging.test.model.EnvelopeMessage;
 import com.klindziuk.sas.messaging.test.model.RabbitQueueModel;
 import com.klindziuk.sas.messaging.test.service.rabbitmq.MessagingConsumer;
@@ -11,12 +10,13 @@ import com.klindziuk.sas.messaging.test.util.RandomUtil;
 import com.rabbitmq.client.Channel;
 import java.util.Collections;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class RequestReplyConsumerMessagingTest extends BaseMessagingTest {
+public class AuditRequestReplyConsumerMessagingTest extends BaseMessagingTest {
 
   @Test
-  public void testRequestReplyMessagingViaPublisher() {
+  public void testAuditRequestReplyMessagingViaPublisher() {
     final Channel channel = rabbitMqChannel;
     final MessagingConsumer messagingConsumer = new MessagingConsumer(channel);
     final RabbitQueueModel rabbitQueueModel =
@@ -33,5 +33,6 @@ public class RequestReplyConsumerMessagingTest extends BaseMessagingTest {
 
     rabbitQueueService.publishToExchange(requestQueueModel, Collections.emptyMap(), eventMessage);
     awaitService.awaitUntil(() -> isMessageContainsPhrase(phrase, rabbitQueueModel));
+    Assertions.assertTrue(isAuditResponseContainsPhrase(phrase));
   }
 }

@@ -5,6 +5,7 @@ import com.klindziuk.sas.messaging.test.model.RabbitQueueModel;
 import com.klindziuk.sas.messaging.test.model.response.RequestReplyResponse;
 import com.klindziuk.sas.messaging.test.service.rabbitmq.MessagingConsumer;
 import com.klindziuk.sas.messaging.test.storage.RabbitQueueModelStorage;
+import com.klindziuk.sas.messaging.test.util.RandomUtil;
 import com.rabbitmq.client.Channel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class RequestReplyConsumerApiTest extends BaseMessagingTest {
 
     rabbitQueueService.createAndSubscribeQueue(rabbitQueueModel);
 
-    final String phrase = "messaging-test-1-call-0";
+    final String phrase = RandomUtil.randomPhrase();
     final RequestReplyResponse requestReplyResponse =
         new ProducerService().producerClient().requestReply(phrase);
 

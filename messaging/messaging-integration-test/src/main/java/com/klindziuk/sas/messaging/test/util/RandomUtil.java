@@ -12,4 +12,11 @@ public final class RandomUtil {
         + "-name-"
         + RandomStringUtils.randomAlphabetic(5).toLowerCase();
   }
+
+  public static String randomPhrase() {
+    return "test-messaging-"
+        + RandomStringUtils.randomAlphabetic(5).toLowerCase()
+        + "-phrase-"
+        + RandomStringUtils.randomAlphabetic(5).toLowerCase();
+  }
 }

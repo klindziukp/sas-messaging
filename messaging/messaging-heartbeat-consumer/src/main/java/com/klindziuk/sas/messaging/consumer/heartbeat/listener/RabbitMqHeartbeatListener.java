@@ -1,4 +1,4 @@
-package com.klindziuk.sas.messaging.consumer.heartbeat.service;
+package com.klindziuk.sas.messaging.consumer.heartbeat.listener;
 
 import com.klindziuk.sas.messaging.common.EnvelopeMessage;
 import com.klindziuk.sas.messaging.common.util.MapperUtil;
@@ -9,9 +9,9 @@ import org.springframework.amqp.core.MessageListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RabbitMqHeartBeatListener implements MessageListener {
+public class RabbitMqHeartbeatListener implements MessageListener {
 
-  private static final Logger log = LoggerFactory.getLogger(RabbitMqHeartBeatListener.class);
+  private static final Logger log = LoggerFactory.getLogger(RabbitMqHeartbeatListener.class);
 
   public void onMessage(Message message) {
     log.info("Consuming heartbeat message: {},", message);

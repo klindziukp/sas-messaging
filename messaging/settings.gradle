@@ -1,5 +1,7 @@
 rootProject.name = 'messaging'
-include 'producer'
-include 'heartbeat-consumer'
-include 'uppercase-consumer'
+include 'messaging-producer'
+include 'messaging-heartbeat-consumer'
+include 'messaging-reply-consumer'
+include 'messaging-integration-test'
+include 'messaging-common'
 

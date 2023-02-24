@@ -1,5 +1,6 @@
 version: "3.2"
 services:
+
   rabbitmq:
     image: rabbitmq:3.10.7-management
     hostname: rabbitmq
@@ -34,7 +35,7 @@ services:
 
   messaging-producer:
     container_name: messaging-producer
-    image: producer:0.0.1-SNAPSHOT
+    image: messaging-producer:0.0.1-SNAPSHOT
     environment:
       spring.datasource.url: jdbc:postgresql://postgres:5432/audit
       spring.datasource.schema: schema
@@ -67,7 +68,7 @@ services:
 
   messaging-heartbeat-consumer:
     container_name: messaging-heartbeat-consumer
-    image: heartbeat-consumer:0.0.1-SNAPSHOT
+    image: messaging-heartbeat-consumer:0.0.1-SNAPSHOT
     environment:
       spring.rabbitmq.host: rabbitmq
       spring.rabbitmq.port: 5672
@@ -88,7 +89,7 @@ services:
 
   messaging-reply-consumer:
     container_name: messaging-reply-consumer
-    image: reply-consumer:0.0.1-SNAPSHOT
+    image: messaging-reply-consumer:0.0.1-SNAPSHOT
     environment:
       spring.rabbitmq.host: rabbitmq
       spring.rabbitmq.port: 5672

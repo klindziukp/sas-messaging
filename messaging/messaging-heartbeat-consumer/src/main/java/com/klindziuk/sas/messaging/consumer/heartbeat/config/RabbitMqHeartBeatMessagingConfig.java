@@ -1,7 +1,6 @@
 package com.klindziuk.sas.messaging.consumer.heartbeat.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.klindziuk.sas.messaging.consumer.heartbeat.service.RabbitMqHeartBeatListener;
+import com.klindziuk.sas.messaging.consumer.heartbeat.listener.RabbitMqHeartbeatListener;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -17,11 +16,6 @@ import org.springframework.context.annotation.Import;
 public class RabbitMqHeartBeatMessagingConfig {
 
   @Autowired private RabbitMqHeartbeatConfig rabbitMqHeartBeatConfig;
-
-  @Bean
-  ObjectMapper envelopeObjectMapper() {
-    return new ObjectMapper();
-  }
 
   @Bean
   Queue heartBeatQueue() {
@@ -43,7 +37,7 @@ public class RabbitMqHeartBeatMessagingConfig {
         new SimpleMessageListenerContainer();
     simpleMessageListenerContainer.setConnectionFactory(connectionFactory());
     simpleMessageListenerContainer.setQueues(heartBeatQueue());
-    simpleMessageListenerContainer.setMessageListener(new RabbitMqHeartBeatListener());
+    simpleMessageListenerContainer.setMessageListener(new RabbitMqHeartbeatListener());
     return simpleMessageListenerContainer;
   }
 }
