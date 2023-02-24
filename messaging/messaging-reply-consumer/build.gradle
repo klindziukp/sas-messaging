@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'com.klindziuk.sas'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(':messaging-common'))
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootBuildImage {
+    builder = 'paketobuildpacks/builder:tiny'
+    imageName = "${project.name}:${version}"
+}

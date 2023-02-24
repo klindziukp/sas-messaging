@@ -1,0 +1,36 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: update
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+  datasource:
+    url: jdbc:postgresql://localhost:5432/audit
+    schema: audit
+    username: postgres
+    password: postgres
+sas:
+  messaging:
+    rabbitmq:
+      queue:
+        request: sas-request-queue
+        reply: sas-reply-queue
+        heartbeat: sas-heartbeat-queue
+      exchange:
+        request: sas-request-exchange
+        reply: sas-reply-exchange
+        heartbeat: sas-heartbeat-exchange
+      routing-key:
+        request: sas-request
+        reply: sas-reply
+        heartbeat: sas-heartbeat

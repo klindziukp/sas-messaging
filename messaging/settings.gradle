@@ -1,0 +1,5 @@
+rootProject.name = 'messaging'
+include 'producer'
+include 'heartbeat-consumer'
+include 'uppercase-consumer'
+

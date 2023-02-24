@@ -1,0 +1,111 @@
+version: "3.2"
+services:
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    hostname: rabbitmq
+    container_name: 'rabbitmq'
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./script/rabbitmq/rabbitmq-enabled-plugins:/etc/rabbitmq/enabled_plugins
+      - ./script/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./script/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+
+  postgres:
+    container_name: postgress
+    image: postgres:10.5
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=audit
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./script/sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  messaging-producer:
+    container_name: messaging-producer
+    image: producer:0.0.1-SNAPSHOT
+    environment:
+      spring.datasource.url: jdbc:postgresql://postgres:5432/audit
+      spring.datasource.schema: schema
+      spring.datasource.username: postgres
+      spring.datasource.password: postgres
+      spring.jpa.show-sql: "true"
+      spring.jpa.properties.hibernate.ddl-auto: update
+      spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: guest
+      spring.rabbitmq.password: guest
+      sas.messaging.rabbitmq.queue.request: sas-request-queue
+      sas.messaging.rabbitmq.queue.reply: sas-reply-queue
+      sas.messaging.rabbitmq.queue.heartbeat: sas-heartbeat-queue
+      sas.messaging.rabbitmq.exchange.request: sas-request-exchange
+      sas.messaging.rabbitmq.exchange.reply: sas-reply-exchange
+      sas.messaging.rabbitmq.exchange.heartbeat: sas-heartbeat-exchange
+      sas.messaging.rabbitmq.routing-key.request: sas-request
+      sas.messaging.rabbitmq.routing-key.reply: sas-reply
+      sas.messaging.rabbitmq.routing-key.heartbeat: sas-heartbeat
+    ports:
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - rabbitmq
+      - postgres
+    restart: on-failure
+
+  messaging-heartbeat-consumer:
+    container_name: messaging-heartbeat-consumer
+    image: heartbeat-consumer:0.0.1-SNAPSHOT
+    environment:
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: guest
+      spring.rabbitmq.password: guest
+      sas.messaging.rabbitmq.queue.heartbeat: sas-heartbeat-queue
+      sas.messaging.rabbitmq.exchange.heartbeat: sas-heartbeat-exchange
+      sas.messaging.rabbitmq.routing-key.heartbeat: sas-heartbeat
+    ports:
+      - 8081:8081
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - rabbitmq
+      - postgres
+      - messaging-producer
+    restart: on-failure
+
+  messaging-reply-consumer:
+    container_name: messaging-reply-consumer
+    image: reply-consumer:0.0.1-SNAPSHOT
+    environment:
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: guest
+      spring.rabbitmq.password: guest
+      sas.messaging.rabbitmq.queue.request: sas-request-queue
+      sas.messaging.rabbitmq.queue.reply: sas-reply-queue
+      sas.messaging.rabbitmq.exchange.request: sas-request-exchange
+      sas.messaging.rabbitmq.exchange.reply: sas-reply-exchange
+      sas.messaging.rabbitmq.routing-key.request: sas-request
+      sas.messaging.rabbitmq.routing-key.reply: sas-reply
+    ports:
+      - 8082:8082
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - rabbitmq
+      - postgres
+      - messaging-producer
+    restart: on-failure

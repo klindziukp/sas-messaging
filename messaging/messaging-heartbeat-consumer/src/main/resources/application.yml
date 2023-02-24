@@ -1,0 +1,23 @@
+server:
+  port: 8081
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+sas:
+  messaging:
+    rabbitmq:
+      queue:
+        request: sas-request-queue
+        reply: sas-reply-queue
+        heartbeat: sas-heartbeat-queue
+      exchange:
+        request: sas-request-exchange
+        reply: sas-reply-exchange
+        heartbeat: sas-heartbeat-exchange
+      routing-key:
+        request: sas-request
+        reply: sas-reply
+        heartbeat: sas-heartbeat
